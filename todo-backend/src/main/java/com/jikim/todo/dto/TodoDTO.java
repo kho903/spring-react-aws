@@ -14,7 +14,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public class TodoDTO {
-	private Long id;
+	private String id;
 	private String title;
 	private boolean done;
 

@@ -14,7 +14,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public class TodoEntity {
-	private Long id;
+	private String id;
 	private String userId;
 	private String title;
 	private boolean done;
