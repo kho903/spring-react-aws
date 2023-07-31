@@ -47,4 +47,8 @@ public class TodoService {
 			throw new RuntimeException("Unknown user.");
 		}
 	}
+
+	public List<TodoEntity> retrieveTodo(final String userId) {
+		return todoRepository.findByUserId(userId);
+	}
 }
