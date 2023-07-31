@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -89,5 +90,25 @@ public class TodoController {
 		List<TodoDTO> response = ResponseDTO.<TodoDTO>builder().data(dtos).build().getData();
 
 		return ResponseEntity.ok().body(response);
+	}
+
+	@DeleteMapping
+	public ResponseEntity<?> deleteTodo(@RequestBody TodoDTO dto) {
+		try {
+			String temporaryUserId = "temporary-user";
+			TodoEntity entity = TodoDTO.toEntity(dto);
+
+			entity.setUserId(temporaryUserId);
+			List<TodoEntity> entities = todoService.deleteTodo(entity);
+			List<TodoDTO> dtos = entities.stream().map(TodoDTO::new).collect(Collectors.toList());
+
+			ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().data(dtos).build();
+			return ResponseEntity.ok().body(response);
+		} catch (Exception e) {
+			String error = e.getMessage();
+			ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().error(error).build();
+			return ResponseEntity.badRequest().body(response);
+
+		}
 	}
 }
