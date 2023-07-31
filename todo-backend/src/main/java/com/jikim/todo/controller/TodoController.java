@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -72,6 +73,21 @@ public class TodoController {
 		List<TodoDTO> dtos = entities.stream().map(TodoDTO::new).collect(Collectors.toList());
 
 		ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().data(dtos).build();
+		return ResponseEntity.ok().body(response);
+	}
+
+	@PutMapping
+	public ResponseEntity<?> updateTodo(@RequestBody TodoDTO dto) {
+		String temporaryUserId = "temporary-user";
+
+		TodoEntity entity = TodoDTO.toEntity(dto);
+		entity.setUserId(temporaryUserId);
+
+		List<TodoEntity> entities = todoService.updateTodo(entity);
+		List<TodoDTO> dtos = entities.stream().map(TodoDTO::new).collect(Collectors.toList());
+
+		List<TodoDTO> response = ResponseDTO.<TodoDTO>builder().data(dtos).build().getData();
+
 		return ResponseEntity.ok().body(response);
 	}
 }

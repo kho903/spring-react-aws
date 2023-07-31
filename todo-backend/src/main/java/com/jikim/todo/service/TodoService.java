@@ -1,6 +1,7 @@
 package com.jikim.todo.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -50,5 +51,20 @@ public class TodoService {
 
 	public List<TodoEntity> retrieveTodo(final String userId) {
 		return todoRepository.findByUserId(userId);
+	}
+
+	public List<TodoEntity> updateTodo(final TodoEntity entity) {
+		validate(entity);
+
+		final Optional<TodoEntity> original = todoRepository.findById(entity.getId());
+
+		original.ifPresent(todo -> {
+			todo.setTitle(entity.getTitle());
+			todo.setDone(entity.isDone());
+
+			todoRepository.save(todo);
+		});
+
+		return retrieveTodo(entity.getUserId());
 	}
 }
